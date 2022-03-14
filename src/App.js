@@ -9,10 +9,10 @@ import {
 function App() {
   const gooddollarLink = createLoginLink({
     v: "Google",
-    web: "http://localhost:3001/",
+    web: "https://gooddollar.netlify.app",
     id: "0x09D2011Ca5781CA70810F6d82837648132762F9a",
     r: ["mobile", "location", "email", "name"],
-    rdu: "http://localhost:3001/",
+    rdu: "https://gooddollar.netlify.app",
   });
   console.log(gooddollarLink);
 
