@@ -8,13 +8,13 @@ import {
 
 function App() {
   const gooddollarLink = createLoginLink({
+    redirectLink: "https://gooddev.netlify.app/AppNavigation/LoginRedirect",
     v: "Google",
-    web: "https://gooddollar.netlify.app",
+    web: "http://localhost:3000",
     id: "0x09D2011Ca5781CA70810F6d82837648132762F9a",
     r: ["mobile", "location", "email", "name"],
-    rdu: "https://gooddollar.netlify.app",
+    rdu: "http://localhost:3000",
   });
-  console.log(gooddollarLink);
 
   const [gooddollarData, setGooddollarData] = useState({});
 
@@ -32,9 +32,13 @@ function App() {
             <p>An App To Test the loggin with G$ functionality.</p>
             <LoginButton
               onLoginCallback={async (data) => {
-                console.log(data);
-                setGooddollarData(await parseLoginResponse(data));
-                console.log("cool stuff happening", parseLoginResponse(data));
+                try {
+                  if (data.error) return alert("Login request denied !");
+                  setGooddollarData(await parseLoginResponse(data));
+                  console.log("cool stuff happening", parseLoginResponse(data));
+                } catch (e) {
+                  console.log(e);
+                }
               }}
               gooddollarlink={gooddollarLink}
               style={{ fontSize: 20, padding: 20 }}
@@ -46,15 +50,15 @@ function App() {
         ) : (
           <div>
             <p>Logged In</p>
-            <p>Name : {gooddollarData.fullName}</p>
-            <p>Wallet Address : {gooddollarData.walletAddrress}</p>
-            <p>Mobile Number : {gooddollarData.mobile}</p>
-            <p>Location : {gooddollarData.location}</p>
-            <p>Email : {gooddollarData.email}</p>
+            <p>Name : {gooddollarData.fullName.value}</p>
+            <p>Wallet Address : {gooddollarData.walletAddrress.value}</p>
+            <p>Mobile Number : {gooddollarData.mobile.value}</p>
+            <p>Location : {gooddollarData?.location?.value}</p>
+            <p>Email : {gooddollarData.email.value}</p>
             <button
               onClick={() => {
                 setGooddollarData({});
-                window.location.href = "https://gooddollar.netlify.app";
+                window.location.href = "http://localhost:3001";
               }}
               style={{ fontSize: 20, padding: 20 }}
             >
