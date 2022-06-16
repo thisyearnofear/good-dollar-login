@@ -57,21 +57,21 @@ function App() {
                 }
               }}
               gooddollarlink={gooddollarLinkDev}
-              style={{ fontSize: 20, padding: 20 }}
+              style={{ fontSize: 20, padding: 20, marginBottom: 10 }}
               rdu="gasdasd"
             >
               Loggin With GOODDOLLAR(DEV)
             </LoginButton>
             <LoginButton
               gooddollarlink={gooddollarLinkProd}
-              style={{ fontSize: 20, padding: 20,marginBottom:10 }}
+              style={{ fontSize: 20, padding: 20, marginBottom: 10 }}
               rdu="gasdasd"
             >
               Loggin With GOODDOLLAR(PROD)
             </LoginButton>
             <LoginButton
               gooddollarlink={gooddollarLinkStaging}
-              style={{ fontSize: 20, padding: 20,marginBottom:10 }}
+              style={{ fontSize: 20, padding: 20 }}
               rdu="gasdasd"
             >
               Loggin With GOODDOLLAR(STAGING)
