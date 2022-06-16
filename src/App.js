@@ -64,14 +64,14 @@ function App() {
             </LoginButton>
             <LoginButton
               gooddollarlink={gooddollarLinkProd}
-              style={{ fontSize: 20, padding: 20 }}
+              style={{ fontSize: 20, padding: 20,marginBottom:10 }}
               rdu="gasdasd"
             >
               Loggin With GOODDOLLAR(PROD)
             </LoginButton>
             <LoginButton
               gooddollarlink={gooddollarLinkStaging}
-              style={{ fontSize: 20, padding: 20 }}
+              style={{ fontSize: 20, padding: 20,marginBottom:10 }}
               rdu="gasdasd"
             >
               Loggin With GOODDOLLAR(STAGING)
