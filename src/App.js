@@ -7,8 +7,24 @@ import {
 } from "client-sdk-gooddollar";
 
 function App() {
-  const gooddollarLink = createLoginLink({
-    redirectLink: "https://gooddev.netlify.app/AppNavigation/LoginRedirect",
+  const gooddollarLinkDev = createLoginLink({
+    redirectLink: "http://gooddev.netlify.app/AppNavigation/LoginRedirect",
+    v: "Google",
+    web: "https://gooddollar.netlify.app",
+    id: "0x09D2011Ca5781CA70810F6d82837648132762F9a",
+    r: ["mobile", "location", "email", "name"],
+    rdu: "https://gooddollar.netlify.app",
+  });
+  const gooddollarLinkProd = createLoginLink({
+    redirectLink: "http://wallet.gooddollar.org/AppNavigation/LoginRedirect",
+    v: "Google",
+    web: "https://gooddollar.netlify.app",
+    id: "0x09D2011Ca5781CA70810F6d82837648132762F9a",
+    r: ["mobile", "location", "email", "name"],
+    rdu: "https://gooddollar.netlify.app",
+  });
+  const gooddollarLinkStaging = createLoginLink({
+    redirectLink: "http://goodqa.netlify.app/AppNavigation/LoginRedirect",
     v: "Google",
     web: "https://gooddollar.netlify.app",
     id: "0x09D2011Ca5781CA70810F6d82837648132762F9a",
@@ -40,11 +56,25 @@ function App() {
                   console.log(e);
                 }
               }}
-              gooddollarlink={gooddollarLink}
+              gooddollarlink={gooddollarLinkDev}
               style={{ fontSize: 20, padding: 20 }}
               rdu="gasdasd"
             >
-              Loggin With GOODDOLLAR
+              Loggin With GOODDOLLAR(DEV)
+            </LoginButton>
+            <LoginButton
+              gooddollarlink={gooddollarLinkProd}
+              style={{ fontSize: 20, padding: 20 }}
+              rdu="gasdasd"
+            >
+              Loggin With GOODDOLLAR(PROD)
+            </LoginButton>
+            <LoginButton
+              gooddollarlink={gooddollarLinkStaging}
+              style={{ fontSize: 20, padding: 20 }}
+              rdu="gasdasd"
+            >
+              Loggin With GOODDOLLAR(STAGING)
             </LoginButton>
           </>
         ) : (
