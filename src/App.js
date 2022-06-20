@@ -50,8 +50,9 @@ function App() {
               onLoginCallback={async (data) => {
                 try {
                   if (data.error) return alert("Login request denied !");
-                  setGooddollarData(await parseLoginResponse(data));
-                  console.log("cool stuff happening", parseLoginResponse(data));
+                  parseLoginResponse(data).then((d) => {
+                    setGooddollarData(d);
+                  })
                 } catch (e) {
                   console.log(e);
                 }
@@ -66,6 +67,7 @@ function App() {
               gooddollarlink={gooddollarLinkProd}
               style={{ fontSize: 20, padding: 20, marginBottom: 10 }}
               rdu="gasdasd"
+              onLoginCallback={() => { }}
             >
               Loggin With GOODDOLLAR(PROD)
             </LoginButton>
@@ -73,6 +75,7 @@ function App() {
               gooddollarlink={gooddollarLinkStaging}
               style={{ fontSize: 20, padding: 20 }}
               rdu="gasdasd"
+              onLoginCallback={() => { }}
             >
               Loggin With GOODDOLLAR(STAGING)
             </LoginButton>
