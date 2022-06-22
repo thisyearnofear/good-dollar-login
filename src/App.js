@@ -10,16 +10,16 @@ function App() {
   const gooddollarLinkDev = createLoginLink({
     redirectLink: "http://gooddev.netlify.app/AppNavigation/LoginRedirect",
     v: "Google",
-    web: "https://gooddollar.netlify.app",
-    id: "0x09D2011Ca5781CA70810F6d82837648132762F9a",
+    web: window.location.href,
+    id: "0x7abcaB0f7d818B869FE4782631dFA9142e9830eE",
     r: ["mobile", "location", "email", "name"],
-    rdu: "https://gooddollar.netlify.app",
+    rdu: window.location.href,
   });
   const gooddollarLinkProd = createLoginLink({
     redirectLink: "http://wallet.gooddollar.org/AppNavigation/LoginRedirect",
     v: "Google",
     web: "https://gooddollar.netlify.app",
-    id: "0x09D2011Ca5781CA70810F6d82837648132762F9a",
+    id: "0x7abcaB0f7d818B869FE4782631dFA9142e9830eE",
     r: ["mobile", "location", "email", "name"],
     rdu: "https://gooddollar.netlify.app",
   });
@@ -27,7 +27,7 @@ function App() {
     redirectLink: "http://goodqa.netlify.app/AppNavigation/LoginRedirect",
     v: "Google",
     web: "https://gooddollar.netlify.app",
-    id: "0x09D2011Ca5781CA70810F6d82837648132762F9a",
+    id: "0x7abcaB0f7d818B869FE4782631dFA9142e9830eE",
     r: ["mobile", "location", "email", "name"],
     rdu: "https://gooddollar.netlify.app",
   });
