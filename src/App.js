@@ -10,8 +10,8 @@ function App() {
   const gooddollarLinkDev = createLoginLink({
     redirectLink: "http://gooddev.netlify.app/AppNavigation/LoginRedirect",
     v: "Google",
-    web: window.location.href,
-    id: "0x7abcaB0f7d818B869FE4782631dFA9142e9830eE",
+    web: 'https://gooddollar.netlify.app/',
+    id: "0x09D2011Ca5781CA70810F6d82837648132762F9a",
     r: ["mobile", "location", "email", "name"],
     rdu: window.location.href,
   });
@@ -21,7 +21,7 @@ function App() {
     web: "https://gooddollar.netlify.app",
     id: "0x7abcaB0f7d818B869FE4782631dFA9142e9830eE",
     r: ["mobile", "location", "email", "name"],
-    rdu: "https://gooddollar.netlify.app",
+    rdu: window.location.href,
   });
   const gooddollarLinkStaging = createLoginLink({
     redirectLink: "http://goodqa.netlify.app/AppNavigation/LoginRedirect",
@@ -29,7 +29,7 @@ function App() {
     web: "https://gooddollar.netlify.app",
     id: "0x7abcaB0f7d818B869FE4782631dFA9142e9830eE",
     r: ["mobile", "location", "email", "name"],
-    rdu: "https://gooddollar.netlify.app",
+    rdu: window.location.href,
   });
 
   const [gooddollarData, setGooddollarData] = useState({});
@@ -48,10 +48,11 @@ function App() {
             <p>An App To Test the loggin with G$ functionality.</p>
             <LoginButton
               onLoginCallback={async (data) => {
+                console.log(data)
                 try {
                   if (data.error) return alert("Login request denied !");
                   parseLoginResponse(data).then((d) => {
-                    setGooddollarData(d);
+                    setGooddollarData(d)
                   })
                 } catch (e) {
                   console.log(e);
