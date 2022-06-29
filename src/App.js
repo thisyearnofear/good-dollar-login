@@ -4,7 +4,7 @@ import {
   LoginButton,
   createLoginLink,
   parseLoginResponse,
-} from "client-sdk-gooddollar";
+} from "@gooddollar/goodlogin-sdk";
 
 function App() {
   const gooddollarLinkDev = createLoginLink({
@@ -85,7 +85,7 @@ function App() {
           <div>
             <p>Logged In</p>
             <p>Name : {gooddollarData.fullName.value}</p>
-            <p>Wallet Address : {gooddollarData.walletAddrress.value}</p>
+            <p>Wallet Address : {gooddollarData.walletAddress.value}</p>
             <p>Mobile Number : {gooddollarData.mobile.value}</p>
             <p>Location : {gooddollarData?.location?.value}</p>
             <p>Email : {gooddollarData.email.value}</p>
