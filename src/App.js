@@ -84,11 +84,11 @@ function App() {
         ) : (
           <div>
             <p>Logged In</p>
-            <p>Name : {gooddollarData.fullName.value}</p>
-            <p>Wallet Address : {gooddollarData.walletAddress.value}</p>
-            <p>Mobile Number : {gooddollarData.mobile.value}</p>
+            <p>Name : {gooddollarData?.fullName?.value}</p>
+            <p>Wallet Address : {gooddollarData?.walletAddress?.value}</p>
+            <p>Mobile Number : {gooddollarData?.mobile?.value}</p>
             <p>Location : {gooddollarData?.location?.value}</p>
-            <p>Email : {gooddollarData.email.value}</p>
+            <p>Email : {gooddollarData?.email.value}</p>
             <button
               onClick={() => {
                 setGooddollarData({});
