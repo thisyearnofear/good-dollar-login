@@ -1,6 +1,30 @@
 # GoodDollar Login Example
 
-This project demonstrates how to implement login with GoodDollar using the GoodDollar client-sdk.
+This project demonstrates how to implement login with GoodDollar using the GoodDollar client-sdk. It features two different UI templates for the login interface.
+
+## Live Demo
+
+Visit [https://good-dollar.netlify.app/](https://good-dollar.netlify.app/)
+
+## Features
+
+- Two login UI templates:
+  - Modern: Clean, minimalist design
+  - Slide: Blue-themed interface with slide animations
+- Display user information after successful login:
+  - Full Name
+  - Wallet Address
+  - Mobile Number
+  - Location
+  - Email
+- Easy template switching with toggle button
+
+## Known Browser Behaviors
+
+There are some browser-specific behaviors to be aware of:
+
+- **Brave Browser**: Login process remains within the application, allowing users to see their profile information after authentication
+- **Chrome**: Redirects to the GoodDollar wallet and remains there. Users will need to manually navigate back to the application
 
 ## Prerequisites
 
@@ -34,31 +58,22 @@ yarn start
 
 The app will open in your default browser at `http://localhost:3000`.
 
-## Features
+## Configuration
 
-- Login with GoodDollar (DEV, PROD, and STAGING environments)
-- Display user information after successful login:
-  - Full Name
-  - Wallet Address
-  - Mobile Number
-  - Location
-  - Email
+The application uses a configuration file (`src/config.js`) that includes:
 
-## Environment Configuration
-
-The app includes three different GoodDollar login configurations:
-
-- Development (DEV)
-- Production (PROD)
-- Staging (STAGING)
-
-Each environment uses different redirect links and contract IDs.
+- Production environment settings
+- Web URLs
+- Contract IDs
+- Redirect links
 
 ## Dependencies
 
-- React
-- @gooddollar/goodlogin-sdk
-- client-sdk-gooddollar
+Main dependencies include:
+
+- React 17.0.2
+- @gooddollar/goodlogin-sdk: 1.1.15
+- client-sdk-gooddollar: 1.0.20
 - Other React-related dependencies
 
 ## Available Scripts
@@ -67,3 +82,11 @@ Each environment uses different redirect links and contract IDs.
 - `npm build` or `yarn build`: Builds the app for production
 - `npm test` or `yarn test`: Runs the test suite
 - `npm eject` or `yarn eject`: Ejects from Create React App
+
+## Contributing
+
+Feel free to submit issues and enhancement requests.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.

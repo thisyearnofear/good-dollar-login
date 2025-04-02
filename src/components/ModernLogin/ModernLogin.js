@@ -16,7 +16,7 @@ const ModernLogin = () => {
     web: config.prod.webUrl,
     id: config.prod.id,
     r: ["mobile", "location", "email", "name"],
-    rdu: window.location.href,
+    rdu: window.location.origin,
   });
 
   const handleLogin = async (data) => {
@@ -67,7 +67,7 @@ const ModernLogin = () => {
             className="logout-button"
             onClick={() => {
               setGooddollarData({});
-              window.location.href = "https://gooddollar.netlify.app";
+              window.location.href = config.prod.webUrl;
             }}
           >
             Logout
@@ -94,7 +94,7 @@ const ModernLogin = () => {
           <LoginButton
             onLoginCallback={handleLogin}
             gooddollarlink={gooddollarLink}
-            rdu="gasdasd"
+            rdu={window.location.origin}
             className="login-button"
           >
             Login with GoodDollar

@@ -16,7 +16,7 @@ const SlideLogin = () => {
     web: config.prod.webUrl,
     id: config.prod.id,
     r: ["mobile", "location", "email", "name"],
-    rdu: window.location.href,
+    rdu: window.location.origin,
   });
 
   const handleLogin = async (data) => {
@@ -68,7 +68,7 @@ const SlideLogin = () => {
             className="slide-logout"
             onClick={() => {
               setGooddollarData({});
-              window.location.href = "https://gooddollar.netlify.app";
+              window.location.href = config.prod.webUrl;
             }}
           >
             Logout
@@ -95,7 +95,7 @@ const SlideLogin = () => {
           <LoginButton
             onLoginCallback={handleLogin}
             gooddollarlink={gooddollarLink}
-            rdu="gasdasd"
+            rdu={window.location.origin}
             className="slide-login-button"
           >
             Connect Wallet
