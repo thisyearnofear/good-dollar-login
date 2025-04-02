@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import {
   LoginButton,
   createLoginLink,
@@ -7,34 +7,17 @@ import {
 import { config } from "../../config";
 import "./SlideLogin.css";
 
-const environments = {
-  dev: {
-    name: "Development",
-    color: "#3498db",
-    redirectLink: config.dev.redirectLink,
-    id: config.dev.id,
-  },
-  staging: {
-    name: "Staging",
-    color: "#e67e22",
-    redirectLink: config.staging.redirectLink,
-    id: config.staging.id,
-  },
-  prod: {
-    name: "Production",
-    color: "#2ecc71",
-    redirectLink: config.prod.redirectLink,
-    id: config.prod.id,
-  },
-};
-
 const SlideLogin = () => {
-  const [activeEnv, setActiveEnv] = useState("dev");
   const [gooddollarData, setGooddollarData] = useState({});
-  const [isDragging, setIsDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [scrollLeft, setScrollLeft] = useState(0);
-  const sliderRef = useRef(null);
+
+  const gooddollarLink = createLoginLink({
+    redirectLink: config.prod.redirectLink,
+    v: "Google",
+    web: config.prod.webUrl,
+    id: config.prod.id,
+    r: ["mobile", "location", "email", "name"],
+    rdu: window.location.href,
+  });
 
   const handleLogin = async (data) => {
     try {
@@ -50,51 +33,12 @@ const SlideLogin = () => {
     }
   };
 
-  const handleMouseDown = (e) => {
-    setIsDragging(true);
-    setStartX(e.pageX - sliderRef.current.offsetLeft);
-    setScrollLeft(sliderRef.current.scrollLeft);
-  };
-
-  const handleMouseMove = (e) => {
-    if (!isDragging) return;
-    e.preventDefault();
-    const x = e.pageX - sliderRef.current.offsetLeft;
-    const walk = (x - startX) * 2;
-    sliderRef.current.scrollLeft = scrollLeft - walk;
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-    // Snap to closest environment
-    const scrollPosition = sliderRef.current.scrollLeft;
-    const envWidth = sliderRef.current.offsetWidth;
-    const envIndex = Math.round(scrollPosition / envWidth);
-    const envKeys = Object.keys(environments);
-    setActiveEnv(envKeys[envIndex]);
-    sliderRef.current.scrollTo({
-      left: envIndex * envWidth,
-      behavior: "smooth",
-    });
-  };
-
-  const createEnvLink = (env) => {
-    return createLoginLink({
-      redirectLink: config[env].redirectLink,
-      v: "Google",
-      web: config[env].webUrl,
-      id: config[env].id,
-      r: ["mobile", "location", "email", "name"],
-      rdu: window.location.href,
-    });
-  };
-
   if (Object.keys(gooddollarData).length > 0) {
     return (
       <div className="slide-profile">
         <div
           className="slide-profile-content"
-          style={{ backgroundColor: environments[activeEnv].color }}
+          style={{ backgroundColor: "#3498db" }}
         >
           <img
             src="/good-logo.png"
@@ -138,55 +82,25 @@ const SlideLogin = () => {
     <div className="slide-container">
       <div
         className="slide-environments"
-        ref={sliderRef}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
+        style={{ backgroundColor: "#3498db" }}
       >
-        {Object.entries(environments).map(([key, env]) => (
-          <div
-            key={key}
-            className={`slide-environment ${activeEnv === key ? "active" : ""}`}
-            style={{ backgroundColor: env.color }}
-          >
-            <div className="environment-content">
-              <img
-                src="/good-logo.png"
-                alt="GoodDollar Logo"
-                className="slide-logo"
-              />
-              <h2>{env.name}</h2>
-              <p>Login to GoodDollar {env.name} Environment</p>
-              <LoginButton
-                onLoginCallback={handleLogin}
-                gooddollarlink={createEnvLink(key)}
-                rdu="gasdasd"
-                className="slide-login-button"
-              >
-                Connect Wallet
-              </LoginButton>
-            </div>
-          </div>
-        ))}
-      </div>
-      <div className="slide-indicators">
-        {Object.keys(environments).map((key) => (
-          <button
-            key={key}
-            className={`slide-indicator ${activeEnv === key ? "active" : ""}`}
-            style={{ backgroundColor: environments[key].color }}
-            onClick={() => {
-              setActiveEnv(key);
-              sliderRef.current.scrollTo({
-                left:
-                  Object.keys(environments).indexOf(key) *
-                  sliderRef.current.offsetWidth,
-                behavior: "smooth",
-              });
-            }}
+        <div className="environment-content">
+          <img
+            src="/good-logo.png"
+            alt="GoodDollar Logo"
+            className="slide-logo"
           />
-        ))}
+          <h2>GoodDollar</h2>
+          <p>Connect your wallet to continue</p>
+          <LoginButton
+            onLoginCallback={handleLogin}
+            gooddollarlink={gooddollarLink}
+            rdu="gasdasd"
+            className="slide-login-button"
+          >
+            Connect Wallet
+          </LoginButton>
+        </div>
       </div>
     </div>
   );

@@ -9,35 +9,15 @@ import "./ModernLogin.css";
 
 const ModernLogin = () => {
   const [gooddollarData, setGooddollarData] = useState({});
-  const [activeTab, setActiveTab] = useState("dev");
-  const [showTooltip, setShowTooltip] = useState(false);
 
-  const gooddollarLinks = {
-    dev: createLoginLink({
-      redirectLink: config.dev.redirectLink,
-      v: "Google",
-      web: config.dev.webUrl,
-      id: config.dev.id,
-      r: ["mobile", "location", "email", "name"],
-      rdu: window.location.href,
-    }),
-    prod: createLoginLink({
-      redirectLink: config.prod.redirectLink,
-      v: "Google",
-      web: config.prod.webUrl,
-      id: config.prod.id,
-      r: ["mobile", "location", "email", "name"],
-      rdu: window.location.href,
-    }),
-    staging: createLoginLink({
-      redirectLink: config.staging.redirectLink,
-      v: "Google",
-      web: config.staging.webUrl,
-      id: config.staging.id,
-      r: ["mobile", "location", "email", "name"],
-      rdu: window.location.href,
-    }),
-  };
+  const gooddollarLink = createLoginLink({
+    redirectLink: config.prod.redirectLink,
+    v: "Google",
+    web: config.prod.webUrl,
+    id: config.prod.id,
+    r: ["mobile", "location", "email", "name"],
+    rdu: window.location.href,
+  });
 
   const handleLogin = async (data) => {
     try {
@@ -52,39 +32,6 @@ const ModernLogin = () => {
       alert("An error occurred during login");
     }
   };
-
-  const EnvironmentInfo = () => (
-    <div className={`environment-info ${showTooltip ? "show" : ""}`}>
-      <div className="info-content">
-        <h3>Environment Information</h3>
-        <div className="info-section">
-          <h4>Development</h4>
-          <p>
-            For testing during development. Uses test networks and mock data.
-            Perfect for developers to test new features without affecting real
-            data.
-          </p>
-        </div>
-        <div className="info-section">
-          <h4>Staging</h4>
-          <p>
-            Pre-production environment for final testing. Similar to production
-            but with test data. Used to catch bugs before they reach real users.
-          </p>
-        </div>
-        <div className="info-section">
-          <h4>Production</h4>
-          <p>
-            Live environment with real transactions and data. This is what real
-            users interact with. Changes here affect actual user data.
-          </p>
-        </div>
-        <button className="close-info" onClick={() => setShowTooltip(false)}>
-          ×
-        </button>
-      </div>
-    </div>
-  );
 
   if (Object.keys(gooddollarData).length > 0) {
     return (
@@ -140,44 +87,13 @@ const ModernLogin = () => {
             className="login-logo"
           />
           <h1>GoodDollar</h1>
-          <p>Choose your environment to continue</p>
-        </div>
-
-        <div className="environment-section">
-          <div className="environment-header">
-            <span className="info-icon" onClick={() => setShowTooltip(true)}>
-              ℹ️
-            </span>
-          </div>
-
-          <EnvironmentInfo />
-
-          <div className="environment-tabs">
-            <button
-              className={`tab ${activeTab === "dev" ? "active" : ""}`}
-              onClick={() => setActiveTab("dev")}
-            >
-              Development
-            </button>
-            <button
-              className={`tab ${activeTab === "staging" ? "active" : ""}`}
-              onClick={() => setActiveTab("staging")}
-            >
-              Staging
-            </button>
-            <button
-              className={`tab ${activeTab === "prod" ? "active" : ""}`}
-              onClick={() => setActiveTab("prod")}
-            >
-              Production
-            </button>
-          </div>
+          <p>Connect your wallet to continue</p>
         </div>
 
         <div className="login-content">
           <LoginButton
             onLoginCallback={handleLogin}
-            gooddollarlink={gooddollarLinks[activeTab]}
+            gooddollarlink={gooddollarLink}
             rdu="gasdasd"
             className="login-button"
           >

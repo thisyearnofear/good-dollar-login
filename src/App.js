@@ -1,26 +1,26 @@
 import "./App.css";
 import React, { useState } from "react";
-import { templates, defaultTemplate } from "./templates";
+import ModernLogin from "./components/ModernLogin/ModernLogin";
+import SlideLogin from "./components/SlideLogin/SlideLogin";
 import TemplateToggle from "./components/TemplateToggle/TemplateToggle";
-import Tutorial from "./components/Tutorial/Tutorial";
 
 function App() {
-  const [activeTemplate, setActiveTemplate] = useState(defaultTemplate);
-  const [showTutorial, setShowTutorial] = useState(true);
+  const [activeTemplate, setActiveTemplate] = useState("modern");
 
-  const ActiveTemplateComponent = templates[activeTemplate].component;
-
-  const handleToggle = () => {
-    setActiveTemplate(activeTemplate === "slide" ? "modern" : "slide");
+  const toggleTemplate = () => {
+    setActiveTemplate(activeTemplate === "modern" ? "slide" : "modern");
   };
+
+  const ActiveTemplateComponent =
+    activeTemplate === "modern" ? ModernLogin : SlideLogin;
 
   return (
     <div className="App">
-      <TemplateToggle activeTemplate={activeTemplate} onToggle={handleToggle} />
-
+      <TemplateToggle
+        activeTemplate={activeTemplate}
+        onToggle={toggleTemplate}
+      />
       <ActiveTemplateComponent />
-
-      {showTutorial && <Tutorial onComplete={() => setShowTutorial(false)} />}
     </div>
   );
 }
