@@ -28,7 +28,7 @@ router.post("/upload", async (req, res) => {
 
 /**
  * GET /api/canva/export/:designId?wallet=
- * Returns: {url}
+ * Returns: {cid, url}
  */
 router.get("/export/:designId", async (req, res) => {
   try {
@@ -37,8 +37,8 @@ router.get("/export/:designId", async (req, res) => {
     if (!wallet || !designId) {
       return res.status(400).json({ error: "wallet and designId required" });
     }
-    const { url } = await exportDesign(wallet, designId);
-    res.json({ url });
+    const { cid, url } = await exportDesign(wallet, designId);
+    res.json({ cid, url });
   } catch (e) {
     console.error("[/api/canva/export]", e.message || e);
     res.status(500).json({ error: e.message || "Export failed" });
