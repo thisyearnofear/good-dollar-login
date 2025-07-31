@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 import VennDiagram from "../components/VennDiagram/VennDiagram";
+import { useUserContext } from "../contexts/UserContext";
+import { generateCodeVerifier, codeChallenge } from "../utils/pkce";
 
 /**
  * Venn Studio main UI page.
@@ -13,6 +15,7 @@ const StudioPage = () => {
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
   const [showDiagram, setShowDiagram] = useState(false);
+  const { walletAddress, canvaLinked, setCanvaLinked } = useUserContext();
 
   const handleGetSuggestions = async () => {
     setErr("");
@@ -38,6 +41,40 @@ const StudioPage = () => {
 
   const handleGenerate = () => {
     if (selected) setShowDiagram(true);
+  };
+
+  // Canva OAuth logic
+  const handleLinkCanva = async () => {
+    if (!walletAddress) {
+      setErr("Please connect GoodDollar wallet first.");
+      return;
+    }
+    setErr("");
+    // PKCE
+    const codeVerifier = generateCodeVerifier();
+    const state = window.crypto.randomUUID?.() || Math.random().toString(36).slice(2);
+    sessionStorage.setItem(`pkce_code_verifier_${state}`, codeVerifier);
+    sessionStorage.setItem(`canva_wallet_${state}`, walletAddress);
+
+    // Get authUrl from backend
+    try {
+      const { data } = await axios.get("/oauth/login", {
+        params: { wallet: walletAddress }
+      });
+      const authUrl = data.authUrl + "&state=" + state;
+      const popup = window.open(authUrl, "_blank", "width=500,height=700");
+      // Listen for message
+      const listener = (event) => {
+        if (event.data?.canvaLinked) {
+          setCanvaLinked(true);
+          popup && popup.close();
+          window.removeEventListener("message", listener);
+        }
+      };
+      window.addEventListener("message", listener);
+    } catch (e) {
+      setErr("Failed to initiate Canva OAuth");
+    }
   };
 
   return (
@@ -100,10 +137,24 @@ const StudioPage = () => {
       )}
 
       <button
-        className="bg-gray-400 text-white px-6 py-2 rounded font-semibold w-full mt-4 opacity-50 cursor-not-allowed"
-        disabled
+        className={`px-6 py-2 rounded font-semibold w-full mt-4 transition flex items-center justify-center gap-2 ${
+          canvaLinked
+            ? "bg-green-500 text-white opacity-100"
+            : "bg-gray-400 text-white opacity-80"
+        }`}
+        onClick={handleLinkCanva}
+        disabled={canvaLinked}
       >
-        Link Canva (coming soon)
+        {canvaLinked ? (
+          <>
+            <span>Canva linked</span>
+            <span role="img" aria-label="linked">
+              ✅
+            </span>
+          </>
+        ) : (
+          "Link Canva"
+        )}
       </button>
     </div>
   );

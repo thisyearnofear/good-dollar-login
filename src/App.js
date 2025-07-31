@@ -5,6 +5,7 @@ import ModernLogin from "./components/ModernLogin/ModernLogin";
 import SlideLogin from "./components/SlideLogin/SlideLogin";
 import TemplateToggle from "./components/TemplateToggle/TemplateToggle";
 import StudioPage from "./pages/StudioPage";
+import OAuthRedirect from "./pages/OAuthRedirect";
 import { useUserContext } from "./contexts/UserContext";
 
 /**
@@ -44,6 +45,7 @@ function App() {
         }
       />
       <Route path="/studio" element={<StudioPage />} />
+      <Route path="/oauth/redirect" element={<OAuthRedirect />} />
     </Routes>
   );
 }

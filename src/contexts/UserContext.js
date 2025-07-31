@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext } from "react";
+import React, { createContext, useState, useContext, useEffect } from "react";
 
 /**
  * User context shape.
@@ -15,13 +15,26 @@ const UserContext = createContext(null);
 
 /**
  * Provider for user context.
+ * Persists canvaLinked in localStorage.
  * @param {object} props
  * @returns {JSX.Element}
  */
 export function UserContextProvider({ children }) {
   const [goodUser, setGoodUser] = useState(null);
   const [walletAddress, setWalletAddress] = useState(null);
-  const [canvaLinked, setCanvaLinked] = useState(false);
+  const [canvaLinked, setCanvaLinkedState] = useState(
+    () => JSON.parse(localStorage.getItem("canvaLinked") || "false")
+  );
+
+  // Persist canvaLinked in localStorage
+  useEffect(() => {
+    localStorage.setItem("canvaLinked", JSON.stringify(canvaLinked));
+  }, [canvaLinked]);
+
+  const setCanvaLinked = (val) => {
+    setCanvaLinkedState(val);
+    localStorage.setItem("canvaLinked", JSON.stringify(val));
+  };
 
   return (
     <UserContext.Provider
