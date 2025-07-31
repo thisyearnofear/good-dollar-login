@@ -8,6 +8,7 @@ import dotenv from "dotenv";
 import oauthRouter from "./routes/oauth.js";
 import canvaRouter from "./routes/canva.js";
 import aiRouter from "./routes/ai.js";
+import nftRouter from "./routes/nft.js";
 
 dotenv.config();
 

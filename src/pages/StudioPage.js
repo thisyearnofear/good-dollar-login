@@ -240,6 +240,10 @@ const StudioPage = () => {
               <div className="mt-2">
                 <img src={pinnedUrl} alt="Exported Venn" className="mx-auto max-h-48 border" />
               </div>
+              {/* Mint NFT Button */}
+              {walletAddress && (
+                <MintNFTSection walletAddress={walletAddress} pinnedUrl={pinnedUrl} />
+              )}
             </div>
           )}
         </>
@@ -268,5 +272,68 @@ const StudioPage = () => {
     </div>
   );
 };
+
+// Mint NFT button and status display
+import React, { useState } from "react";
+import axios from "axios";
+
+function MintNFTSection({ walletAddress, pinnedUrl }) {
+  const [minting, setMinting] = useState(false);
+  const [txHash, setTxHash] = useState("");
+  const [mintErr, setMintErr] = useState("");
+
+  // Extract CID from pinnedUrl for minting
+  const getCid = () => {
+    try {
+      const match = pinnedUrl.match(/ipfs\/([^\/]+)\//);
+      return match ? match[1] : "";
+    } catch {
+      return "";
+    }
+  };
+
+  const handleMint = async () => {
+    setMinting(true);
+    setMintErr("");
+    setTxHash("");
+    try {
+      const cid = getCid();
+      const { data } = await axios.post("/api/nft/mint", {
+        wallet: walletAddress,
+        cid,
+      });
+      setTxHash(data.txHash);
+    } catch (e) {
+      setMintErr(e.response?.data?.error || "Mint failed.");
+    } finally {
+      setMinting(false);
+    }
+  };
+
+  return (
+    <div className="mt-4">
+      <button
+        className="bg-yellow-600 text-white px-6 py-2 rounded font-semibold hover:bg-yellow-700 transition disabled:opacity-50 w-full"
+        onClick={handleMint}
+        disabled={minting}
+      >
+        {minting ? "Minting..." : "Mint NFT (10 G$)"}
+      </button>
+      {txHash && (
+        <div className="mt-2 text-center">
+          <a
+            href={`https://explorer.fuse.io/tx/${txHash}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-yellow-700 underline"
+          >
+            View on Fuse Explorer
+          </a>
+        </div>
+      )}
+      {mintErr && <div className="text-red-600 mt-1">{mintErr}</div>}
+    </div>
+  );
+}
 
 export default StudioPage;
