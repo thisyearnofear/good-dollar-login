@@ -1,8 +1,12 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import VennDiagram from "../components/VennDiagram/VennDiagram";
 import { useUserContext } from "../contexts/UserContext";
 import { generateCodeVerifier, codeChallenge } from "../utils/pkce";
+import Stepper from "../components/Stepper/Stepper";
+import PalettePicker from "../components/PalettePicker/PalettePicker";
+import SkeletonBox from "../components/SkeletonBox";
+import { fireConfetti } from "../utils/confetti";
 
 /**
  * Venn Studio main UI page with Canva and IPFS integration.
@@ -23,8 +27,18 @@ const StudioPage = () => {
   const [uploading, setUploading] = useState(false);
   const [exporting, setExporting] = useState(false);
 
+  // UI/Palette/Step state
+  const steps = ["Topics", "Word", "Style", "Publish", "Mint"];
+  const [currentStep, setCurrentStep] = useState(0);
+  const [circleColors, setCircleColors] = useState(["#60a5fa", "#f472b6"]);
+
   const { walletAddress, canvaLinked, setCanvaLinked } = useUserContext();
   const svgRef = useRef();
+
+  // Confetti on pin
+  useEffect(() => {
+    if (pinnedUrl) fireConfetti();
+  }, [pinnedUrl]);
 
   const handleGetSuggestions = async () => {
     setErr("");
@@ -34,6 +48,7 @@ const StudioPage = () => {
     setDesignId("");
     setEditUrl("");
     setPinnedUrl("");
+    setCurrentStep(0);
     if (!topicA.trim() || !topicB.trim()) {
       setErr("Please enter both topics.");
       return;
@@ -44,6 +59,7 @@ const StudioPage = () => {
         topics: [topicA, topicB]
       });
       setSuggestions(data.suggestions || []);
+      setCurrentStep(1);
     } catch (e) {
       setErr(e.response?.data?.error || "Failed to fetch suggestions.");
     } finally {
@@ -57,6 +73,7 @@ const StudioPage = () => {
       setDesignId("");
       setEditUrl("");
       setPinnedUrl("");
+      setCurrentStep(2);
     }
   };
 
@@ -146,6 +163,7 @@ const StudioPage = () => {
 
   return (
     <div className="max-w-xl mx-auto bg-white rounded-lg shadow-md p-8 mt-8">
+      <Stepper steps={steps} currentStep={currentStep} />
       <h2 className="text-3xl font-bold mb-6 text-center">G$ Venn Studio</h2>
       <div className="flex flex-col sm:flex-row gap-4 mb-4">
         <input
@@ -170,12 +188,22 @@ const StudioPage = () => {
       </button>
       {err && <div className="text-red-600 mb-2">{err}</div>}
 
-      {suggestions.length > 0 && (
+      {loading ? (
+        <div className="mb-4 flex flex-col gap-2">
+          <SkeletonBox className="h-8 w-full" />
+          <SkeletonBox className="h-8 w-4/5" />
+        </div>
+      ) : suggestions.length > 0 && (
         <div className="mb-4">
           <div className="font-semibold mb-2">AI Suggestions:</div>
           <div className="flex flex-col gap-2">
             {suggestions.map((sugg, idx) => (
-              <label key={sugg} className="flex items-center gap-2">
+              <label
+                key={sugg}
+                className={`flex items-center gap-2 transition-transform ${
+                  selected === sugg ? "scale-105 animate-wiggle shadow-md" : ""
+                }`}
+              >
                 <input
                   type="radio"
                   name="suggestion"
@@ -199,13 +227,16 @@ const StudioPage = () => {
         Generate Diagram
       </button>
 
+      {/* Style step: palette picker */}
       {showDiagram && (
         <>
+          <PalettePicker onSelect={(colors) => setCircleColors(colors)} />
           <VennDiagram
             ref={svgRef}
             topicA={topicA}
             topicB={topicB}
             intersection={selected}
+            circleColors={circleColors}
           />
           {canvaLinked && (
             <button
