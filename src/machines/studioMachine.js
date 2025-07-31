@@ -40,14 +40,24 @@ export const studioMachine = createMachine({
     },
     style: {
       on: {
-        NEXT: { target: "publish" },
+        NEXT: [
+          {
+            cond: "colorsChosen",
+            target: "publish"
+          }
+        ],
         PREV: { target: "word" },
         SET_FIELD: { actions: "setField" }
       }
     },
     publish: {
       on: {
-        NEXT: { target: "mint" },
+        NEXT: [
+          {
+            cond: "hasCid",
+            target: "mint"
+          }
+        ],
         PREV: { target: "style" },
         SET_FIELD: { actions: "setField" }
       }
@@ -69,6 +79,8 @@ export const studioMachine = createMachine({
   },
   guards: {
     topicsEntered: (ctx) => ctx.topicA.trim() && ctx.topicB.trim(),
-    wordSelected: (ctx) => !!ctx.intersection
+    wordSelected: (ctx) => !!ctx.intersection,
+    colorsChosen: (ctx) => Array.isArray(ctx.colors) && ctx.colors.length === 2,
+    hasCid: (ctx) => !!ctx.cid,
   }
 });
