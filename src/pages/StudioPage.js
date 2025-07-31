@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import axios from "axios";
 import VennDiagram from "../components/VennDiagram/VennDiagram";
 import { useUserContext } from "../contexts/UserContext";
 import { generateCodeVerifier, codeChallenge } from "../utils/pkce";
 
 /**
- * Venn Studio main UI page.
+ * Venn Studio main UI page with Canva and IPFS integration.
  */
 const StudioPage = () => {
   const [topicA, setTopicA] = useState("");
@@ -15,13 +15,25 @@ const StudioPage = () => {
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
   const [showDiagram, setShowDiagram] = useState(false);
+
+  // Canva + export state
+  const [designId, setDesignId] = useState("");
+  const [editUrl, setEditUrl] = useState("");
+  const [pinnedUrl, setPinnedUrl] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const [exporting, setExporting] = useState(false);
+
   const { walletAddress, canvaLinked, setCanvaLinked } = useUserContext();
+  const svgRef = useRef();
 
   const handleGetSuggestions = async () => {
     setErr("");
     setSuggestions([]);
     setSelected("");
     setShowDiagram(false);
+    setDesignId("");
+    setEditUrl("");
+    setPinnedUrl("");
     if (!topicA.trim() || !topicB.trim()) {
       setErr("Please enter both topics.");
       return;
@@ -40,7 +52,12 @@ const StudioPage = () => {
   };
 
   const handleGenerate = () => {
-    if (selected) setShowDiagram(true);
+    if (selected) {
+      setShowDiagram(true);
+      setDesignId("");
+      setEditUrl("");
+      setPinnedUrl("");
+    }
   };
 
   // Canva OAuth logic
@@ -74,6 +91,56 @@ const StudioPage = () => {
       window.addEventListener("message", listener);
     } catch (e) {
       setErr("Failed to initiate Canva OAuth");
+    }
+  };
+
+  // Upload Venn SVG to Canva
+  const handleUploadCanva = async () => {
+    if (!canvaLinked || !walletAddress || !svgRef.current) {
+      setErr("Connect Canva and generate a diagram first.");
+      return;
+    }
+    setErr("");
+    setUploading(true);
+    setEditUrl("");
+    setDesignId("");
+    setPinnedUrl("");
+    try {
+      const svg = svgRef.current.getSVG();
+      const fileName = `venn-${Date.now()}.svg`;
+      const { data } = await axios.post("/api/canva/upload", {
+        svg,
+        fileName,
+        wallet: walletAddress,
+      });
+      setDesignId(data.designId);
+      setEditUrl(data.editUrl);
+      if (data.editUrl) window.open(data.editUrl, "_blank");
+    } catch (e) {
+      setErr(e.response?.data?.error || "Failed to upload to Canva.");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  // Export Canva design and pin to IPFS
+  const handleExportPin = async () => {
+    if (!designId || !walletAddress) {
+      setErr("You must upload to Canva and have a designId.");
+      return;
+    }
+    setErr("");
+    setExporting(true);
+    setPinnedUrl("");
+    try {
+      const { data } = await axios.get(`/api/canva/export/${designId}`, {
+        params: { wallet: walletAddress }
+      });
+      setPinnedUrl(data.url);
+    } catch (e) {
+      setErr(e.response?.data?.error || "Failed to export/pin image.");
+    } finally {
+      setExporting(false);
     }
   };
 
@@ -133,7 +200,49 @@ const StudioPage = () => {
       </button>
 
       {showDiagram && (
-        <VennDiagram topicA={topicA} topicB={topicB} intersection={selected} />
+        <>
+          <VennDiagram
+            ref={svgRef}
+            topicA={topicA}
+            topicB={topicB}
+            intersection={selected}
+          />
+          {canvaLinked && (
+            <button
+              className="bg-indigo-600 text-white px-6 py-2 rounded font-semibold hover:bg-indigo-700 transition disabled:opacity-50 w-full mb-2"
+              onClick={handleUploadCanva}
+              disabled={uploading}
+            >
+              {uploading ? "Uploading..." : "Upload to Canva"}
+            </button>
+          )}
+          {editUrl && (
+            <div className="mb-2 text-center">
+              <a href={editUrl} target="_blank" rel="noopener noreferrer" className="text-blue-700 underline">
+                Open in Canva Editor
+              </a>
+            </div>
+          )}
+          {designId && (
+            <button
+              className="bg-green-600 text-white px-6 py-2 rounded font-semibold hover:bg-green-700 transition disabled:opacity-50 w-full mb-2"
+              onClick={handleExportPin}
+              disabled={exporting}
+            >
+              {exporting ? "Exporting..." : "Export & Pin"}
+            </button>
+          )}
+          {pinnedUrl && (
+            <div className="mb-2 text-center">
+              <a href={pinnedUrl} target="_blank" rel="noopener noreferrer" className="text-green-700 underline">
+                View Pinned Image (IPFS)
+              </a>
+              <div className="mt-2">
+                <img src={pinnedUrl} alt="Exported Venn" className="mx-auto max-h-48 border" />
+              </div>
+            </div>
+          )}
+        </>
       )}
 
       <button
