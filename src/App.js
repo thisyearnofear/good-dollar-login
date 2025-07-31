@@ -38,7 +38,9 @@ function App() {
               />
               {activeTemplate === "modern" ? <ModernLogin /> : <SlideLogin />}
             </div>
-          ) : null
+          ) : (
+            <StudioPage />
+          )
         }
       />
       <Route path="/studio" element={<StudioPage />} />

@@ -4,7 +4,6 @@ import { BrowserRouter } from "react-router-dom";
 import { UserContextProvider } from "./contexts/UserContext";
 import App from './App';
 import "./index.css";
-// ...other imports...
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
