@@ -4,9 +4,10 @@ import { Routes, Route, useNavigate } from "react-router-dom";
 import ModernLogin from "./components/ModernLogin/ModernLogin";
 import SlideLogin from "./components/SlideLogin/SlideLogin";
 import TemplateToggle from "./components/TemplateToggle/TemplateToggle";
-import StudioPage from "./pages/StudioPage";
 import OAuthRedirect from "./pages/OAuthRedirect";
 import { useUserContext } from "./contexts/UserContext";
+import StudioWizardPage from "./pages/StudioWizard";
+import { ToastProvider } from "./components/ui/ToastContainer";
 
 /**
  * Root app component.
@@ -25,28 +26,30 @@ function App() {
   }, [goodUser]);
 
   return (
-    <Routes>
-      <Route
-        path="/"
-        element={
-          !goodUser ? (
-            <div className="App">
-              <TemplateToggle
-                activeTemplate={activeTemplate}
-                onToggle={() =>
-                  setActiveTemplate(activeTemplate === "modern" ? "slide" : "modern")
-                }
-              />
-              {activeTemplate === "modern" ? <ModernLogin /> : <SlideLogin />}
-            </div>
-          ) : (
-            <StudioPage />
-          )
-        }
-      />
-      <Route path="/studio" element={<StudioPage />} />
-      <Route path="/oauth/redirect" element={<OAuthRedirect />} />
-    </Routes>
+    <ToastProvider>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            !goodUser ? (
+              <div className="App">
+                <TemplateToggle
+                  activeTemplate={activeTemplate}
+                  onToggle={() =>
+                    setActiveTemplate(activeTemplate === "modern" ? "slide" : "modern")
+                  }
+                />
+                {activeTemplate === "modern" ? <ModernLogin /> : <SlideLogin />}
+              </div>
+            ) : (
+              <StudioWizardPage />
+            )
+          }
+        />
+        <Route path="/studio" element={<StudioWizardPage />} />
+        <Route path="/oauth/redirect" element={<OAuthRedirect />} />
+      </Routes>
+    </ToastProvider>
   );
 }
 
