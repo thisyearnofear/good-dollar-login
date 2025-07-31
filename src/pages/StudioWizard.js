@@ -6,30 +6,44 @@ import WordStep from "./steps/WordStep";
 import StyleStep from "./steps/StyleStep";
 import PublishStep from "./steps/PublishStep";
 import MintStep from "./steps/MintStep";
+import { AnimatePresence, motion } from "framer-motion";
 
 const steps = ["topics", "word", "style", "publish", "mint"];
 const stepLabels = ["Topics", "Word", "Style", "Publish", "Mint"];
 
+const stepComponents = {
+  topics: TopicsStep,
+  word: WordStep,
+  style: StyleStep,
+  publish: PublishStep,
+  mint: MintStep
+};
+
 /**
  * StudioWizard orchestrates the state machine steps.
  */
-function StepContent() {
+function StepContent({ current }) {
   const { state } = useDiagram();
-  switch (state.value) {
-    case "topics":
-      return <TopicsStep />;
-    case "word":
-      return <WordStep />;
-    case "style":
-      return <StyleStep />;
-    case "publish":
-      return <PublishStep />;
-    case "mint":
-      return <MintStep />;
-    default:
-      return null;
-  }
+  const Step = stepComponents[state.value];
+  // Each step exports a static .stepKey property for AnimatePresence
+  const key = Step.stepKey || state.value;
+  return (
+    <AnimatePresence mode="wait" initial={false}>
+      <motion.div
+        key={key}
+        initial={{ opacity: 0, x: 40 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: -40 }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
+      >
+        <Step />
+      </motion.div>
+    </AnimatePresence>
+  );
 }
+
+import { useDiagram } from "../contexts/DiagramContext";
+import { DiagramProvider } from "../contexts/DiagramContext";
 
 const StudioWizard = () => {
   const { state } = useDiagram();
@@ -37,7 +51,7 @@ const StudioWizard = () => {
   return (
     <div className="max-w-xl mx-auto bg-white rounded-lg shadow-md p-8 mt-8">
       <Stepper steps={stepLabels} currentStep={currentIdx} />
-      <StepContent />
+      <StepContent current={state.value} />
     </div>
   );
 };
@@ -49,3 +63,10 @@ export default function StudioWizardPage() {
     </DiagramProvider>
   );
 }
+
+// Attach stepKey to each step for animation
+TopicsStep.stepKey = "topics";
+WordStep.stepKey = "word";
+StyleStep.stepKey = "style";
+PublishStep.stepKey = "publish";
+MintStep.stepKey = "mint";

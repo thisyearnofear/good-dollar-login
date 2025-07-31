@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useDiagram } from "../../contexts/DiagramContext";
 import SkeletonBox from "../../components/SkeletonBox";
 import axios from "axios";
+import { useToast } from "../../components/ui/ToastContainer";
 
 /**
  * WordStep: fetch intersection suggestions, radio select, update context.
@@ -12,6 +13,7 @@ const WordStep = () => {
   const [loading, setLoading] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
   const [err, setErr] = useState("");
+  const { addToast } = useToast();
 
   React.useEffect(() => {
     // Fetch only if not fetched before
@@ -21,10 +23,14 @@ const WordStep = () => {
     setErr("");
     axios
       .post("/api/ai/suggest", { topics: [topicA, topicB] })
-      .then(({ data }) => setSuggestions(data.suggestions || []))
-      .catch((e) =>
-        setErr(e.response?.data?.error || "Failed to fetch suggestions.")
-      )
+      .then(({ data }) => {
+        setSuggestions(data.suggestions || []);
+        addToast({ message: "Suggestions loaded!", type: "success" });
+      })
+      .catch((e) => {
+        setErr(e.response?.data?.error || "Failed to fetch suggestions.");
+        addToast({ message: "Failed to fetch suggestions.", type: "error" });
+      })
       .finally(() => setLoading(false));
     // eslint-disable-next-line
   }, [topicA, topicB]);

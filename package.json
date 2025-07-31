@@ -42,7 +42,9 @@
     "test": "react-app-rewired test",
     "eject": "react-scripts eject",
     "server": "nodemon server/index.js",
-    "dev": "concurrently \"react-app-rewired start\" \"npm run server\""
+    "dev": "concurrently \"react-app-rewired start\" \"npm run server\"",
+    "storybook": "storybook dev -p 6006",
+    "lint": "eslint 'src/**/*.{js,jsx}'"
   },
   "eslintConfig": {
     "extends": [
@@ -78,7 +80,8 @@
     "hardhat": "^2.22.0",
     "@nomiclabs/hardhat-ethers": "^2.2.4",
     "@openzeppelin/contracts": "^4.9.7",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "@storybook/react": "^7.0.0"
   },
   "resolutions": {
     "bignumber.js": "9.1.1"

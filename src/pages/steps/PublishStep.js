@@ -4,6 +4,7 @@ import { useUserContext } from "../../contexts/UserContext";
 import VennDiagram from "../../components/VennDiagram/VennDiagram";
 import { useToast } from "../../components/ui/ToastContainer";
 import axios from "axios";
+import { initiateCanvaOAuth } from "../../utils/canvaAuth";
 
 /**
  * PublishStep: upload to Canva, export & pin, on success set cid and NEXT.
@@ -17,11 +18,17 @@ const PublishStep = () => {
   const [pinnedUrl, setPinnedUrl] = useState("");
   const [uploading, setUploading] = useState(false);
   const [exporting, setExporting] = useState(false);
+  const [linking, setLinking] = useState(false);
   const svgRef = useRef();
   const { addToast } = useToast();
 
-  const handleLinkCanva = () => {
-    addToast({ message: "Canva linking not implemented here.", type: "error" });
+  const handleLinkCanva = async () => {
+    setLinking(true);
+    try {
+      await initiateCanvaOAuth(walletAddress, setCanvaLinked, addToast);
+    } finally {
+      setLinking(false);
+    }
   };
 
   const handleUploadCanva = async () => {
@@ -89,8 +96,9 @@ const PublishStep = () => {
           <button
             className="bg-gray-400 text-white px-4 py-2 rounded font-semibold mt-2"
             onClick={handleLinkCanva}
+            disabled={linking}
           >
-            Link Canva
+            {linking ? "Linking..." : "Link Canva"}
           </button>
         )}
       </div>
