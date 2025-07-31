@@ -6,9 +6,11 @@ import {
 } from "@gooddollar/goodlogin-sdk";
 import { config } from "../../config";
 import "./ModernLogin.css";
+import { useUserContext } from "../../contexts/UserContext";
 
 const ModernLogin = () => {
   const [gooddollarData, setGooddollarData] = useState({});
+  const { setGoodUser, setWalletAddress } = useUserContext();
 
   const gooddollarLink = createLoginLink({
     redirectLink: config.prod.redirectLink,
@@ -27,6 +29,8 @@ const ModernLogin = () => {
       }
       const parsedData = await parseLoginResponse(data);
       setGooddollarData(parsedData);
+      setGoodUser(parsedData);
+      setWalletAddress(parsedData?.walletAddress?.value ?? null);
     } catch (e) {
       console.error(e);
       alert("An error occurred during login");
